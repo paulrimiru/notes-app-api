@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { Base } from './base';
+import { Category } from './category.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -12,4 +13,7 @@ export class Organization extends Base {
 
   @ManyToMany(() => User, user => user.organisations)
   members: Promise<User[]>;
+
+  @OneToMany(() => Category, category => category.organization)
+  categories: Promise<Category[]>;
 }
