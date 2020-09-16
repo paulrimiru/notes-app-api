@@ -9,6 +9,7 @@ import {
   Param,
   BadRequestException,
 } from '@nestjs/common';
+import { classToPlain } from 'class-transformer';
 
 import { UserService } from '@/modules/user/user.service';
 import { Role } from '@/entities/user.entity';
@@ -52,8 +53,6 @@ export class AuthController {
     user.verified = true;
     user.role = Role.User;
 
-    await this.userService.updateUser(user);
-
-    return null;
+    return classToPlain(await this.userService.updateUser(user));
   }
 }

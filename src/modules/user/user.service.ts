@@ -1,5 +1,5 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { USER_REPOSITORY } from '@/utils/constants';
 import { User } from '@/entities/user.entity';
@@ -18,6 +18,10 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User> {
     return await this.userRepository.findOne({ email });
+  }
+
+  async findManyByEmail(email: string[]): Promise<User[]> {
+    return await this.userRepository.find({ where: { email: In(email) }});
   }
 
   async findById(id: string): Promise<User> {
@@ -44,6 +48,9 @@ export class UserService {
   async updateUser(updatedUser: User): Promise<User> {
     return await this.userRepository.save(updatedUser);
   }
+  async updateManyUsers(updatedUser: User[]): Promise<User[]> {
+    return await this.userRepository.save(updatedUser);
+  }
 
   async isUserSaved(email: string) {
     return !!(await this.findByEmail(email));
@@ -52,10 +59,10 @@ export class UserService {
   encode = (data): string =>
     Buffer.from(data)
       .toString('base64')
-      .toString();
+      .toString()
 
   decode = (data: string) => {
     const decoded = Buffer.from(data, 'base64').toString();
     return decoded;
-  };
+  }
 }

@@ -64,6 +64,7 @@
     "compression": "^1.7.4",
     "dotenv": "^8.1.0",
     "express-rate-limit": "^5.0.0",
+    "googleapis": "^59.0.0",
     "helmet": "^3.21.1",
     "module-alias": "^2.2.2",
     "nodemailer": "^6.3.1",
@@ -74,7 +75,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.3",
-    "typeorm": "^0.2.19"
+    "typeorm": "^0.2.26"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.9.0",
@@ -98,7 +99,7 @@
     "ts-node": "^8.4.1",
     "tsconfig-paths": "^3.9.0",
     "tslint": "^5.20.0",
-    "typescript": "^3.6.3"
+    "typescript": "^4.0.2"
   },
   "jest": {
     "moduleFileExtensions": [

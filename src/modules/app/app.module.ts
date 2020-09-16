@@ -10,9 +10,10 @@ import { AppService } from '@/modules/app/app.service';
 import { AppController } from './app.controller';
 import { ConfigModule } from '../config/config.module';
 import { AuthModule } from '../auth/auth.module';
+import { OrganisationModule } from '../organisation/organisation.module';
 
 @Module({
-  imports: [ConfigModule, UserModule, AuthModule, CacheModule.register()],
+  imports: [ConfigModule, UserModule, AuthModule, OrganisationModule, CacheModule.register()],
   controllers: [AppController],
   providers: [
     AppService,

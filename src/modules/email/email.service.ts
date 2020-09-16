@@ -1,9 +1,14 @@
+import { Injectable, Logger } from '@nestjs/common';
+
 // tslint:disable-next-line: no-var-requires
 const nodemailer = require('nodemailer');
 
-import { Injectable } from '@nestjs/common';
+// tslint:disable-next-line: no-var-requires
+const { google } = require('googleapis');
 
-const from = '"Jacetech Solutions" <noreply@jacetechno.com>';
+const OAuth2 = google.auth.OAuth2;
+
+const from = 'MyEshop.Ke<myeshop.254@gmail.com>';
 
 export interface BaseEmailInfo {
   receiver: string;
@@ -25,19 +30,44 @@ export type EmailInfo = BaseEmailInfo &
 @Injectable()
 export class EmailService {
   transport;
+  private readonly logger = new Logger(EmailService.name);
   constructor() {
-    this.transport = nodemailer.createTransport({
-      host: 'mail.jacetechno.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    this.constructTransport()
   }
 
-  sendMail(emailInfo: EmailInfo) {
+  async constructTransport() {
+    const OAUTH_PLAYGROUND = 'https://developers.google.com/oauthplayground';
+    const myOAuth2Client = new OAuth2(
+      process.env.EMAILCLIENT,
+      process.env.EMAILCLIENTSECRET,
+      OAUTH_PLAYGROUND,
+    );
+
+    myOAuth2Client.setCredentials({
+      refresh_token: process.env.EMAILREFRESHTOKEN,
+    });
+
+    try {
+      const myAccessToken = await myOAuth2Client.getAccessToken();
+      this.transport = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          type: 'OAuth2',
+          user: process.env.EMAIL_USER,
+          clientId: process.env.EMAILCLIENT,
+          clientSecret: process.env.EMAILCLIENTSECRET,
+          refreshToken: process.env.EMAILREFRESHTOKEN,
+          accessToken: myAccessToken,
+        },
+      });
+    } catch (e) {
+      this.logger.error(e.stack)
+    }
+  }
+
+  async sendMail(emailInfo: EmailInfo) {
     let email: { [key: string]: string } = {
       from,
       to: emailInfo.receiver,
@@ -66,16 +96,16 @@ export class EmailService {
       case 'confirmation-email':
         email = {
           ...email,
-          subject: 'Welcome to Ecommerse App',
+          subject: 'Welcome to Notes',
           text: `
-            Welcome to Ecommerse App. We are very happy to have you here. Please activate your account using the link below.
+            Welcome to Notes. We are very happy to have you here. Please activate your account using the link below.
             ${emailInfo.confirmationUrl}
           `,
           html: `
             <h2 style="display: flex; align-items: center;">
               <img style="height: 25px; margin-right: .5em"
               src="http://3.17.158.38/assets/images/common/group-2@2x.png"
-              alt="mmdp logo"> Welcome to Ecommerse App</h2>
+              alt="mmdp logo"> Welcome to Notes</h2>
               <p>We are very happy to have you here. Please activate your account using the link below.</p>
               ${emailInfo.confirmationUrl}
           `,
@@ -84,6 +114,12 @@ export class EmailService {
         break;
     }
 
-    this.transport.sendMail(email);
+    try {
+      this.logger.debug('sending email');
+      await this.transport.sendMail(email);
+      this.logger.debug('sent');
+    } catch (error) {
+      this.logger.error(error.stack);
+    }
   }
 }
