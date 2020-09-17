@@ -11,6 +11,6 @@ export class Category extends Base {
   @ManyToOne(() => Organization, organisation => organisation.categories, { eager: true })
   organization: Organization;
 
-  @OneToMany(() => Note, note => note.category)
+  @OneToMany(() => Note, note => note.category, { onDelete: 'CASCADE' })
   notes: Note[];
 }

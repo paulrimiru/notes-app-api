@@ -20,13 +20,13 @@ export class NoteController {
     return classToPlain(await this.noteService.updateNote(note));
   }
 
-  @Delete()
+  @Delete(':id')
   async deleteNote(@Req() request: any, @Param('id') id: string) {
     return classToPlain(await this.noteService.deleteNote(id));
   }
 
-  @Get(':id?')
-  async getNote(@Req() request: any, @Param('id') id?: string) {
-    return classToPlain(await this.noteService.getNotes(id));
+  @Get(':id')
+  async getNote(@Req() request: any, @Param('id') id: string) {
+    return classToPlain(await this.noteService.getcategoryNotes(id));
   }
 }

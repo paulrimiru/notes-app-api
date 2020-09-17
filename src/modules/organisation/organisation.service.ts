@@ -77,4 +77,9 @@ export class OrganizationService {
 
     return await deleteRecord(this.organisationRepository, id);
   }
+
+  async getOrganisationMembers(organisationId: string) {
+    const organisation = await getRecord(this.organisationRepository, organisationId) as Organization;
+    return [...await organisation.members, await organisation.owner];
+  }
 }

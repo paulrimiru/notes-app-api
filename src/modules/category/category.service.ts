@@ -3,7 +3,8 @@ import { Note } from '@/entities/note.entity';
 import { Organization } from '@/entities/organisation.entity';
 import { CATEGORY_REPOSITORY, NOTE_REPOSITORY } from '@/utils/constants';
 import { createRecord, deleteRecord, getRecord, updateRecord } from '@/utils/crud';
-import { Inject, Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException, NotFoundException, Logger } from '@nestjs/common';
+import { classToPlain } from 'class-transformer';
 import { In, Repository } from 'typeorm';
 import { NoteService } from '../note/note.service';
 import { OrganizationService } from '../organisation/organisation.service';
@@ -18,6 +19,9 @@ export class CategoryService {
     private readonly categoryRepository: Repository<Category>,
     private readonly organisationService: OrganizationService,
   ) {}
+
+  private readonly logger = new Logger(CategoryService.name);
+
 
   async createCategory(id: string, categoryDto: CreateCategoryDto) {
     const organisation = await this.organisationService.getOrganisations(id, categoryDto.organisationId) as Organization;
@@ -45,6 +49,12 @@ export class CategoryService {
 
   async getCategorys(id?: string) {
     return await getRecord(this.categoryRepository, id);
+  }
+
+  async getOrganisationCategories(userId: string, orgId: string) {
+    const organisation = await this.organisationService.getOrganisations(userId, orgId) as Organization;
+    const categories = await organisation.categories;
+    return categories;
   }
 
   async deleteCategory(userId: string, id: string) {

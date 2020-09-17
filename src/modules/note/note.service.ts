@@ -19,7 +19,7 @@ export class NoteService {
     const category = await this.categoryService.getCategorys(noteDto.categoryId) as Category;
 
     const note = new Note();
-    note.notes = noteDto.note;
+    note.name = noteDto.name;
     note.category = category;
 
     return await createRecord(this.noteRepository, note);
@@ -34,6 +34,14 @@ export class NoteService {
 
   async getNotes(id?: string) {
     return await getRecord(this.noteRepository, id);
+  }
+
+  async getcategoryNotes(id: string) {
+    const notes = await this.noteRepository.find({
+      where: { category: { id }},
+    });
+
+    return notes;
   }
 
   async deleteNote(id: string) {

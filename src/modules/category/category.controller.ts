@@ -20,13 +20,13 @@ export class CategoryController {
     return classToPlain(await this.categoryService.updateCategory(request.user.id, category));
   }
 
-  @Delete()
+  @Delete(':id')
   async deleteCategory(@Req() request: any, @Param('id') id: string) {
     return classToPlain(await this.categoryService.deleteCategory(request.user.id, id));
   }
 
   @Get(':id?')
-  async getCategory(@Req() request: any, @Param('id') id?: string) {
-    return classToPlain(await this.categoryService.getCategorys(id));
+  async getCategory(@Req() request: any, @Param('id') id: string) {
+    return classToPlain(await this.categoryService.getOrganisationCategories(request.user.id, id));
   }
 }

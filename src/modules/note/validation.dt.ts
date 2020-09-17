@@ -2,6 +2,8 @@ import { IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateNoteDto {
   @IsNotEmpty()
+  name: string;
+
   note: string;
 
   @IsNotEmpty()

@@ -5,8 +5,8 @@ export const databaseProviders = [
     provide: 'DATABASE_CONNECTION',
     useFactory: async () => {
       const connection = await createConnection(await getConnectionOptions());
-      // await connection.runMigrations();
-      await connection.synchronize(true);
+      await connection.runMigrations();
+      // await connection.synchronize(true);
       return connection;
     },
   },

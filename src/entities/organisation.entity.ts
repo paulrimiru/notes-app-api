@@ -14,6 +14,6 @@ export class Organization extends Base {
   @ManyToMany(() => User, user => user.organisations)
   members: Promise<User[]>;
 
-  @OneToMany(() => Category, category => category.organization)
+  @OneToMany(() => Category, category => category.organization, { onDelete: 'CASCADE' })
   categories: Promise<Category[]>;
 }
