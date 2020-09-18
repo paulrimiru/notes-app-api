@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+
 import { Injectable, Logger } from '@nestjs/common';
 
 // tslint:disable-next-line: no-var-requires
